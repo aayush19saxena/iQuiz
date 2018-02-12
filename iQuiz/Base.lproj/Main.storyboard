@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="HelveticaNeue.ttc">
+            <string>HelveticaNeue</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="iQuiz" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ds8-US-g3g">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LabelCell" rowHeight="212" id="qOZ-Eb-PQs" customClass="ViewControllerTableViewCell" customModule="iQuiz" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="212"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qOZ-Eb-PQs" id="dPB-aA-k0f">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="211.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8bB-j1-QoE">
+                                                    <rect key="frame" x="15" y="13" width="128" height="132"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="128" id="XBJ-sb-q55"/>
+                                                        <constraint firstAttribute="height" constant="132" id="fUC-hQ-UMM"/>
+                                                        <constraint firstAttribute="width" secondItem="8bB-j1-QoE" secondAttribute="height" multiplier="32:33" id="zSF-5E-oba"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HiQ-as-mB3">
+                                                    <rect key="frame" x="160" y="33" width="200" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="HiQ-as-mB3" secondAttribute="height" multiplier="20:3" id="UuI-hG-m00"/>
+                                                        <constraint firstAttribute="height" constant="30" id="c89-RU-hxD"/>
+                                                        <constraint firstAttribute="width" constant="200" id="dJM-vb-zo1"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9hY-YO-eL3">
+                                                    <rect key="frame" x="159" y="79" width="201" height="45"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="45" id="g2k-ns-lqE"/>
+                                                        <constraint firstAttribute="width" constant="201" id="pRx-Lc-PU7"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="9hY-YO-eL3" firstAttribute="leading" secondItem="8bB-j1-QoE" secondAttribute="trailing" constant="16" id="2wq-pz-3jB"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="8bB-j1-QoE" secondAttribute="bottom" constant="56" id="8OU-Gp-a8M"/>
+                                                <constraint firstItem="HiQ-as-mB3" firstAttribute="leading" secondItem="8bB-j1-QoE" secondAttribute="trailing" constant="17" id="94c-RV-RPR"/>
+                                                <constraint firstItem="9hY-YO-eL3" firstAttribute="leading" secondItem="8bB-j1-QoE" secondAttribute="trailing" constant="16" id="Brj-49-cVg"/>
+                                                <constraint firstItem="HiQ-as-mB3" firstAttribute="trailing" secondItem="dPB-aA-k0f" secondAttribute="trailingMargin" id="Kkf-QR-8LI"/>
+                                                <constraint firstItem="9hY-YO-eL3" firstAttribute="trailing" secondItem="dPB-aA-k0f" secondAttribute="trailingMargin" id="O5t-8w-QjT"/>
+                                                <constraint firstItem="HiQ-as-mB3" firstAttribute="top" secondItem="dPB-aA-k0f" secondAttribute="topMargin" constant="22" id="Sfl-nk-7oW"/>
+                                                <constraint firstItem="8bB-j1-QoE" firstAttribute="top" secondItem="dPB-aA-k0f" secondAttribute="topMargin" constant="2" id="dWh-qa-lU2"/>
+                                                <constraint firstItem="9hY-YO-eL3" firstAttribute="top" secondItem="HiQ-as-mB3" secondAttribute="bottom" constant="16" id="e3I-ka-89X"/>
+                                                <constraint firstItem="9hY-YO-eL3" firstAttribute="top" secondItem="HiQ-as-mB3" secondAttribute="bottom" constant="16" id="oTh-wb-RXy"/>
+                                                <constraint firstItem="8bB-j1-QoE" firstAttribute="leading" secondItem="dPB-aA-k0f" secondAttribute="leadingMargin" id="yPr-EU-fAD"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="quizDescription" destination="9hY-YO-eL3" id="KtT-IC-SB4"/>
+                                            <outlet property="quizLabel" destination="HiQ-as-mB3" id="Afm-lR-ep9"/>
+                                            <outlet property="quizLogo" destination="8bB-j1-QoE" id="f1h-Rs-QFv"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="ds8-US-g3g" id="ajD-aQ-OOg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="132.68365817091455"/>
+        </scene>
+    </scenes>
+</document>
