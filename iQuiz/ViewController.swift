@@ -16,6 +16,24 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let quizDescriptions = ["Marvel comics", "Addition & Subtraction", "Scientific Theories"]
     let quizLogos = ["marvel", "math", "science"]
     
+    @IBAction func btnSettings(_ sender: UIBarButtonItem) {
+        print("User has pressed the settings button.")
+        let alert = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK",
+                                      style: .default,
+                                      handler: { _ in
+                                        NSLog("\"OK\" pressed.")
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel",
+                                      style: .cancel,
+                                      handler: { _ in
+                                        NSLog("\"Cancel\" pressed.")
+        }))
+        self.present(alert, animated: true, completion: {
+            NSLog("The completion handler fired")
+        })
+
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return quizLabels.count
