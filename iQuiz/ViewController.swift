@@ -19,6 +19,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         alert.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Enter URL"
         }
+        alert.addAction(UIAlertAction(title: "Check now", style: .default) {
+            UIAlertAction in
+            let url = alert.textFields![0] as UITextField
+            self.getData(url.text)
+            self.tableView.reloadData()
+        })
         alert.addAction(UIAlertAction(title: "Cancel",
                                       style: .cancel,
                                       handler: { _ in
@@ -55,6 +61,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.tableView.dataSource = self
         self.tableView.delegate = self
         getData("http://tednewardsandbox.site44.com/questions.json")
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
         
         /*
         let mathTopic = Topic("Mathematics", "Additon & Subtraction", "math")
@@ -78,49 +87,130 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func getData(_ url: String? = "http://tednewardsandbox.site44.com/questions.json") {
+        self.topicList = []
         var u = url
         if (u == nil || u == "") {
             u = "http://tednewardsandbox.site44.com/questions.json"
         }
         print("Inside getData")
-        let urlRequest = URLRequest(url: URL(string: u!)!)
-        URLSession.shared.dataTask(with: urlRequest, completionHandler: {
-            (data, response, error) -> Void in
-            if(response == nil) {
-                print("Response is nil")
-                return
-            }
-            if error != nil {
-                print("An error occurred")
-            } else {
-                let httpResponse = response
-                let status = (httpResponse as! HTTPURLResponse).statusCode
-                print("Status is: " + String(status))
-                if (status == 200)  {
-                    do {
-                        self.topicList = []
-                        let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [AnyObject]
-                        for object in json {
-                            let title = object["title"]
-                            let desc = object["desc"]
-                            var questions = [Question]()
-                            let questionsJson = object["questions"] as! [[String: AnyObject]]
-                            for questionJson in questionsJson {
-                                let question = Question(questionJson["text"] as! String, questionJson["answers"] as! [String], Int(questionJson["answer"] as! String)!)
-                                questions.append(question)
+        let urlString = URL(string: url!)
+        let config = URLSessionConfiguration.default
+        let session = URLSession.init(configuration: config, delegate: nil, delegateQueue: OperationQueue.current)
+        var jsonData : NSArray = []
+        let fileManager = FileManager.default
+        let path = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("questions.json")
+        let content = NSData(contentsOf: path)
+        if checkConnectionStatus() {
+            let task = session.dataTask(with: urlString!) { (data, response, error) in
+                if let response = response as? HTTPURLResponse {
+                    if response.statusCode == 200 {
+                        do {
+                            jsonData = (try JSONSerialization.jsonObject(with: data!, options: []) as? NSArray)!
+                            do {
+                                try jsonData.write(to: path)
+                                print("JSON data written! to \(path)")
+                            } catch {
+                                if content != nil {
+                                    jsonData = NSArray(contentsOf: path)!
+                                }
                             }
-                            let topic = Topic(title as! String, desc as! String, "")
-                            topic.questions = questions
-                            self.topicList.append(topic)
+                        } catch {
+                            NSLog("Unable to write to file")
                         }
+                    } else {
+                        if let error = error {
+                            NSLog(error.localizedDescription)
+                        } else {
+                            NSLog("Request not successful. Status code: \(response.statusCode)")
+                        }
+                    }
+                } else if let error = error {
+                    NSLog(error.localizedDescription)
+                    let alert = UIAlertController(title: "Download failed", message: "Can't download the json from the URL", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK",
+                                                  style: .default,
+                                                  handler: { _ in
+                                                    NSLog("\"OK\" pressed.")
+                    }))
+                    self.present(alert, animated: true, completion: {
+                        NSLog("The download failed handler fired")
+                    })
+                }
+                
+                if (jsonData.count > 0) {
+                    for index in 0...jsonData.count - 1 {
+                        let topicData = jsonData[index] as! NSDictionary
+                        let topicTitle = topicData.value(forKey: "title") as! String
+                        let topicDesc = topicData.value(forKey: "desc") as! String
+                        let topic = Topic(topicTitle, topicDesc, "")
+                        let questionData = topicData.value(forKey: "questions") as! NSArray
+                        var questions : [Question] = []
                         
-                    } catch {
-                        print ("Catch")
+                        for questionIndex in 0...questionData.count - 1 {
+                            let questionValue = questionData[questionIndex] as! NSDictionary
+                            let question = Question(questionValue.value(forKey: "text") as! String, questionValue.value(forKey: "answers") as! [String], Int(questionValue.value(forKey: "answer") as! String)!)
+                            questions.append(question)
+                        }
+                        topic.questions = questions
+                        self.topicList.append(topic)
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
                     }
                 }
+                
+                // terminates all outstanding tasks i.e. failed HTTP requests
+                session.invalidateAndCancel()
             }
-        }).resume()
-        sleep(1)
+            
+            task.resume()
+        } else {
+            print("JSON data retrived offline")
+            jsonData = NSArray(contentsOf: path)!
+            if (jsonData.count > 0) {
+                for index in 0...jsonData.count - 1 {
+                    let topicData = jsonData[index] as! NSDictionary
+                    let topicTitle = topicData.value(forKey: "title") as! String
+                    let topicDesc = topicData.value(forKey: "desc") as! String
+                    let topic = Topic(topicTitle, topicDesc, "")
+                    let questionData = topicData.value(forKey: "questions") as! NSArray
+                    var questions : [Question] = []
+                    
+                    for questionIndex in 0...questionData.count - 1 {
+                        let questionValue = questionData[questionIndex] as! NSDictionary
+                        let question = Question(questionValue.value(forKey: "text") as! String, questionValue.value(forKey: "answers") as! [String], Int(questionValue.value(forKey: "answer") as! String)!)
+                        questions.append(question)
+                    }
+                    topic.questions = questions
+                    self.topicList.append(topic)
+                }
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
+        tableView.reloadData()
+    }
+    
+    func checkConnectionStatus() -> Bool {
+        if currentConnectionStatus == .notReachable {
+            NSLog("No internet connection")
+            let alert = UIAlertController(title: "Connection Status failed", message: "Can't connect to the internet", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK",
+                                          style: .default,
+                                          handler: { _ in
+                                            NSLog("\"OK\" pressed.")
+            }))
+            self.present(alert, animated: true, completion: {
+                NSLog("The connection failed handler fired")
+            })
+            return false
+        } else {
+            NSLog("Connected to the internet")
+            return true
+        }
     }
     
     override func didReceiveMemoryWarning() {
