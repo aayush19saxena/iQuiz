@@ -15,12 +15,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     @IBAction func btnSettings(_ sender: UIBarButtonItem) {
         print("User has pressed the settings button.")
-        let alert = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK",
-                                      style: .default,
-                                      handler: { _ in
-                                        NSLog("\"OK\" pressed.")
-        }))
+        let alert = UIAlertController(title: "Retrieve JSON", message: "Type in a valid URL", preferredStyle: .alert)
+        alert.addTextField { (textField : UITextField!) -> Void in
+            textField.placeholder = "Enter URL"
+        }
         alert.addAction(UIAlertAction(title: "Cancel",
                                       style: .cancel,
                                       handler: { _ in
@@ -39,7 +37,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath) as! ViewControllerTableViewCell
         let topic =  self.topicList[indexPath.row]
-        cell.quizLogo.image = UIImage(named: topic.topicIcon + ".jpg")
+        //cell.quizLogo.image = UIImage(named: topic.topicIcon + ".jpg")
         cell.quizLabel.text = topic.topicTitle
         cell.quizDescription.text = topic.topicDescription
         return cell
@@ -56,7 +54,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         self.tableView.dataSource = self
         self.tableView.delegate = self
+        getData("http://tednewardsandbox.site44.com/questions.json")
         
+        /*
         let mathTopic = Topic("Mathematics", "Additon & Subtraction", "math")
         let marvelTopic = Topic("Marvel Super Heroes", "Marvel comics", "marvel")
         let scienceTopic = Topic("Science", "Scientific Theories", "science")
@@ -73,7 +73,54 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let scienceQuestion2 = Question("Who found Pasteurization?", ["Louis Pasteur", "Pasteur Graham", "Graham Bell", "Mr. Pasteur"], 1)
         scienceTopic.questions = [scienceQuestion1, scienceQuestion2]
         topicList = [mathTopic, marvelTopic, scienceTopic]
+        */
         
+    }
+    
+    func getData(_ url: String? = "http://tednewardsandbox.site44.com/questions.json") {
+        var u = url
+        if (u == nil || u == "") {
+            u = "http://tednewardsandbox.site44.com/questions.json"
+        }
+        print("Inside getData")
+        let urlRequest = URLRequest(url: URL(string: u!)!)
+        URLSession.shared.dataTask(with: urlRequest, completionHandler: {
+            (data, response, error) -> Void in
+            if(response == nil) {
+                print("Response is nil")
+                return
+            }
+            if error != nil {
+                print("An error occurred")
+            } else {
+                let httpResponse = response
+                let status = (httpResponse as! HTTPURLResponse).statusCode
+                print("Status is: " + String(status))
+                if (status == 200)  {
+                    do {
+                        self.topicList = []
+                        let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [AnyObject]
+                        for object in json {
+                            let title = object["title"]
+                            let desc = object["desc"]
+                            var questions = [Question]()
+                            let questionsJson = object["questions"] as! [[String: AnyObject]]
+                            for questionJson in questionsJson {
+                                let question = Question(questionJson["text"] as! String, questionJson["answers"] as! [String], Int(questionJson["answer"] as! String)!)
+                                questions.append(question)
+                            }
+                            let topic = Topic(title as! String, desc as! String, "")
+                            topic.questions = questions
+                            self.topicList.append(topic)
+                        }
+                        
+                    } catch {
+                        print ("Catch")
+                    }
+                }
+            }
+        }).resume()
+        sleep(1)
     }
     
     override func didReceiveMemoryWarning() {
