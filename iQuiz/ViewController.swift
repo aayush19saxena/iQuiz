@@ -12,29 +12,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     @IBOutlet weak var tableView: UITableView!
     var topicList: [Topic] = []
-    
-    @IBAction func btnSettings(_ sender: UIBarButtonItem) {
-        print("User has pressed the settings button.")
-        let alert = UIAlertController(title: "Retrieve JSON", message: "Type in a valid URL", preferredStyle: .alert)
-        alert.addTextField { (textField : UITextField!) -> Void in
-            textField.placeholder = "Enter URL"
-        }
-        alert.addAction(UIAlertAction(title: "Check now", style: .default) {
-            UIAlertAction in
-            let url = alert.textFields![0] as UITextField
-            self.getData(url.text)
-            self.tableView.reloadData()
-        })
-        alert.addAction(UIAlertAction(title: "Cancel",
-                                      style: .cancel,
-                                      handler: { _ in
-                                        NSLog("\"Cancel\" pressed.")
-        }))
-        self.present(alert, animated: true, completion: {
-            NSLog("The completion handler fired")
-        })
-
-    }
+    var alternativeURL = "https://api.myjson.com/bins/eabyh"
+    var url = "http://tednewardsandbox.site44.com/questions.json"
+    var settings = UserDefaults.standard.string(forKey: "settings-url")
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return topicList.count
@@ -60,39 +40,25 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        getData("http://tednewardsandbox.site44.com/questions.json")
+        getData()
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
-        
-        /*
-        let mathTopic = Topic("Mathematics", "Additon & Subtraction", "math")
-        let marvelTopic = Topic("Marvel Super Heroes", "Marvel comics", "marvel")
-        let scienceTopic = Topic("Science", "Scientific Theories", "science")
-        
-        let mathQuestion1 = Question("What is 15 - 3?", ["11", "12", "14", "15"], 2)
-        let mathQuestion2 = Question("What is 81 - 85?", ["-4", "4", "2", "3"], 1)
-        mathTopic.questions = [mathQuestion1, mathQuestion2]
-        
-        let marvelQuestion1 = Question("Which superhero can fly?", ["Thor", "Superman", "Flash", "Hulk"], 2)
-        let marvelQuestion2 = Question("Which superhero runs super fast?", ["Hulk", "Superman", "Thor", "Flash"], 4)
-        marvelTopic.questions = [marvelQuestion1, marvelQuestion2]
-        
-        let scienceQuestion1 = Question("What does Mn denote?", ["Magnesium", "Manganese", "Manganate", "Man"], 2)
-        let scienceQuestion2 = Question("Who found Pasteurization?", ["Louis Pasteur", "Pasteur Graham", "Graham Bell", "Mr. Pasteur"], 1)
-        scienceTopic.questions = [scienceQuestion1, scienceQuestion2]
-        topicList = [mathTopic, marvelTopic, scienceTopic]
-        */
+        if(!self.loadSettings()) {
+            self.createSettings()
+        }
         
     }
     
-    func getData(_ url: String? = "http://tednewardsandbox.site44.com/questions.json") {
+    func getData() {
         self.topicList = []
-        var u = url
-        if (u == nil || u == "") {
-            u = "http://tednewardsandbox.site44.com/questions.json"
+        var url = self.settings
+        print("URL is: \(url)")
+        if (url == nil || url == "") {
+            // if there is no url in the settings
+            url = "http://tednewardsandbox.site44.com/questions.json"
         }
-        print("Inside getData")
+        print("Inside getData-- attempting to download from the URL: \(url)")
         let urlString = URL(string: url!)
         let config = URLSessionConfiguration.default
         let session = URLSession.init(configuration: config, delegate: nil, delegateQueue: OperationQueue.current)
@@ -109,6 +75,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                             do {
                                 try jsonData.write(to: path)
                                 print("JSON data written! to \(path)")
+                                print(jsonData)
                             } catch {
                                 if content != nil {
                                     jsonData = NSArray(contentsOf: path)!
@@ -213,9 +180,50 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
+    func createSettings() {
+        let settingsKey = "settings-url"
+        NSLog("Creating settings URL with key: \(settingsKey)")
+        UserDefaults.standard.set(url, forKey: settingsKey)
+        NSLog(UserDefaults.standard.string(forKey: settingsKey)!)
+    }
+    
+    func loadSettings() -> Bool {
+        if(self.settings != nil) {
+            self.url = self.settings!
+            return true
+        }
+        return false
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @IBAction func btnSettings(_ sender: UIBarButtonItem) {
+        print("User has pressed the settings button.")
+        let alert = UIAlertController(title: "Retrieve JSON", message: "Type in a valid URL", preferredStyle: .alert)
+        alert.addTextField { (textField : UITextField!) -> Void in
+            textField.placeholder = "Enter URL"
+        }
+        alert.addAction(UIAlertAction(title: "Check now", style: .default) {
+            UIAlertAction in
+            let url = alert.textFields![0] as UITextField
+            print("Updating settings URL with \(url)")
+            UserDefaults.standard.set(url.text, forKey: "settings-url")
+            self.settings = UserDefaults.standard.string(forKey: "settings-url")
+            self.getData()
+            self.tableView.reloadData()
+        })
+        alert.addAction(UIAlertAction(title: "Cancel",
+                                      style: .cancel,
+                                      handler: { _ in
+                                        NSLog("\"Cancel\" pressed.")
+        }))
+        self.present(alert, animated: true, completion: {
+            NSLog("Settings handler fired")
+        })
+        
     }
 
 
