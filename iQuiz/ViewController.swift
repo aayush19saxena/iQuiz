@@ -15,6 +15,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var alternativeURL = "https://api.myjson.com/bins/eabyh"
     var url = "http://tednewardsandbox.site44.com/questions.json"
     var settings = UserDefaults.standard.string(forKey: "settings-url")
+    let refresher = UIRefreshControl()
+    var iconArray = ["science", "marvel", "math"]
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return topicList.count
@@ -23,7 +25,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath) as! ViewControllerTableViewCell
         let topic =  self.topicList[indexPath.row]
-        //cell.quizLogo.image = UIImage(named: topic.topicIcon + ".jpg")
+        cell.quizLogo.image = UIImage(named: self.iconArray[indexPath.row] + ".jpg")
         cell.quizLabel.text = topic.topicTitle
         cell.quizDescription.text = topic.topicDescription
         return cell
@@ -40,6 +42,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         self.tableView.dataSource = self
         self.tableView.delegate = self
+        refresher.addTarget(self, action: #selector(getData), for: .valueChanged)
+        refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        self.tableView.refreshControl = refresher
         getData()
         DispatchQueue.main.async {
             self.tableView.reloadData()
@@ -50,7 +55,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
     }
     
-    func getData() {
+    @objc func getData() {
         self.topicList = []
         var url = self.settings
         print("URL is: \(url)")
@@ -132,6 +137,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }
             
             task.resume()
+            refresher.endRefreshing()
         } else {
             print("JSON data retrived offline")
             jsonData = NSArray(contentsOf: path)!

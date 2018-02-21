@@ -25,6 +25,7 @@
 		62A218C02031593C00F00096 /* science.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 62A218BD2031593C00F00096 /* science.jpg */; };
 		62A218C12031593C00F00096 /* math.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 62A218BE2031593C00F00096 /* math.jpg */; };
 		62A218C320315B5F00F00096 /* ViewControllerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A218C220315B5F00F00096 /* ViewControllerTableViewCell.swift */; };
+		62B7C49B203CEADA0000E231 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 62B7C49A203CEADA0000E231 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		62A218BD2031593C00F00096 /* science.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = science.jpg; sourceTree = "<group>"; };
 		62A218BE2031593C00F00096 /* math.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = math.jpg; sourceTree = "<group>"; };
 		62A218C220315B5F00F00096 /* ViewControllerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerTableViewCell.swift; sourceTree = "<group>"; };
+		62B7C49A203CEADA0000E231 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 			children = (
 				62514729202B9586008ACC33 /* AppDelegate.swift */,
 				6251472B202B9586008ACC33 /* ViewController.swift */,
+				62B7C49A203CEADA0000E231 /* README.md */,
 				629D60822033B9800095F5D5 /* QuestionViewController.swift */,
 				629D60842033B9A20095F5D5 /* AnswerViewController.swift */,
 				6251472D202B9586008ACC33 /* Main.storyboard */,
@@ -268,6 +271,7 @@
 				62A218BF2031593C00F00096 /* marvel.jpg in Resources */,
 				62A218C12031593C00F00096 /* math.jpg in Resources */,
 				62A218C02031593C00F00096 /* science.jpg in Resources */,
+				62B7C49B203CEADA0000E231 /* README.md in Resources */,
 				62514737202B9586008ACC33 /* LaunchScreen.storyboard in Resources */,
 				62514734202B9586008ACC33 /* Assets.xcassets in Resources */,
 				6251472F202B9586008ACC33 /* Main.storyboard in Resources */,
